@@ -36,6 +36,8 @@ export default function ResponsiveAppBar() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     
+    console.log(user);
+    
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
     };
@@ -53,7 +55,7 @@ export default function ResponsiveAppBar() {
 
     const handleLogout = async () => {
         handleCloseUserMenu();
-        const { error } = await supabase.auth.signOut().then(() => {
+        await supabase.auth.signOut().then(() => {
             navigate('/');
         });
     };
@@ -161,7 +163,7 @@ export default function ResponsiveAppBar() {
                                 {
                                     user ?
                                         <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
-                                            <Avatar alt={user.user_metadata.full_name} src={user.user_metadata.avatar_url} referrerPolicy="no-referrer"/>
+                                            <Avatar alt={user.user_metadata.full_name} src={user.user_metadata.avatar_url} rel="noreferrer" />
                                         </IconButton>
                                         :
                                         <Box sx={{display: 'flex', flexDirection: 'row'}}>

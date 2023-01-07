@@ -18,10 +18,14 @@ import { useState, useEffect} from "react";
 import {theme} from "../theme";
 import {Link} from "react-router-dom";
 import {supabase} from "../supabaseClient";
+import {FormHelperText} from "@mui/material";
+import {useProfileSetup} from "../contexts/UserProfileSetupContext";
 
 export default function Album() {
     
+    const { userProfile } = useProfileSetup();
     const [products, setProducts] = useState([]);
+    const [errorMessage, setErrorMessage] = useState(false);
     
     useEffect(() => {
         const getProducts = async () => {
@@ -71,7 +75,7 @@ export default function Album() {
                         </Stack>
                     </Container>
                 </Box>
-                <Container sx={{ py: 8 }} maxWidth="md">
+                <Container sx={{ py: 8 }} maxWidth="lg">
                     {/* End hero unit */}
                     <Grid container spacing={4}>
                         {products.map((product) => (
@@ -96,7 +100,7 @@ export default function Album() {
                                         <CardActions>
                                             <Button component={Link}
                                                     key={product.id}
-                                                    to={`/products/buy`}
+                                                    to={userProfile === null ? `/profile/setup` : `/products/buy`}
                                                     size="small"
                                                     state={{product: product}}
                                              > View

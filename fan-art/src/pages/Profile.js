@@ -7,17 +7,21 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import {Alert, FormHelperText} from "@mui/material";
 import Container from "@mui/material/Container";
-import {v4} from "uuid";
 import {theme} from "../theme";
 import {ThemeProvider} from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import {supabase} from "../supabaseClient";
 import {useAuth} from "../contexts/AuthContext";
+import Stack from "@mui/material/Stack";
+import {Link} from "react-router-dom";
+import UserProfileSetup from "../components/UserProfileSetup";
+import {useProfileSetup} from "../contexts/UserProfileSetupContext";
 
 export default function Profile() {
 
 
     const {user} = useAuth();
+    const { userProfile } = useProfileSetup();
     const [image, setImage] = useState(null);
     const [url, setUrl] = useState("");
     const [errorMessage, setErrorMessage] = useState(false);
@@ -75,6 +79,7 @@ export default function Profile() {
             <ThemeProvider theme={theme}>
                 <CssBaseline/>
                 {alert ? <Alert severity="success">{alertContent}</Alert> : <></>}
+                <UserProfileSetup/>
                 <Container component="main" maxWidth="xs">
                     <Box
                         sx={{
