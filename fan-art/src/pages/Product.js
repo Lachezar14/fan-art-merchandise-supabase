@@ -20,6 +20,10 @@ import {Link} from "react-router-dom";
 import {supabase} from "../supabaseClient";
 import {FormHelperText} from "@mui/material";
 import {useProfileSetup} from "../contexts/UserProfileSetupContext";
+import UserProfileSetup from "../components/UserProfileSetup";
+import VerifiedIcon from '@mui/icons-material/Verified';
+import {blue} from "@mui/material/colors";
+import Tooltip from "@mui/material/Tooltip";
 
 export default function Album() {
     
@@ -41,6 +45,7 @@ export default function Album() {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
+            <UserProfileSetup />
                 {/* Hero unit */}
                 <Box
                     sx={{
@@ -64,15 +69,6 @@ export default function Album() {
                             the creator, etc. Make it short and sweet, but not too short so folks
                             don&apos;t simply skip over it entirely.
                         </Typography>
-                        <Stack
-                            sx={{ pt: 4 }}
-                            direction="row"
-                            spacing={2}
-                            justifyContent="center"
-                        >
-                            <Button variant="contained">Main call to action</Button>
-                            <Button variant="outlined">Secondary action</Button>
-                        </Stack>
                     </Container>
                 </Box>
                 <Container sx={{ py: 8 }} maxWidth="lg">
@@ -89,9 +85,19 @@ export default function Album() {
                                         alt="random"
                                     />
                                     <CardContent sx={{ flexGrow: 1 }}>
-                                        <Typography gutterBottom variant="h5" component="h2">
-                                            {product.product_name}
-                                        </Typography>
+                                        <Box sx={{display: 'flex', flexDirection: 'row'}}>
+                                            <Typography gutterBottom variant="h5" component="h2" sx={{mr: 1}}>
+                                                {product.product_name}
+                                            </Typography>
+                                            {
+                                                product.verified ?
+                                                    <Tooltip title="Product is verified by content creator" arrow>
+                                                        <VerifiedIcon fontSize='small' sx={{color: blue[700]}}/>
+                                                    </Tooltip>
+                                                    :
+                                                    <></>
+                                            }
+                                        </Box>
                                         <Typography>
                                             Price: ${product.product_price}
                                         </Typography>

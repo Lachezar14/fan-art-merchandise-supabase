@@ -8,7 +8,6 @@ import { PayPalButtons } from "@paypal/react-paypal-js";
 import {useEffect, useState} from "react";
 import {useAuth} from "../contexts/AuthContext";
 import {supabase} from "../supabaseClient";
-import UserProfileSetup from "../components/UserProfileSetup";
 
 export default function HomePage() {
 
@@ -18,7 +17,7 @@ export default function HomePage() {
     const product = state;
     
     const [success, setSuccess] = useState(false);
-    const [ErrorMessage, setErrorMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
     const [orderID, setOrderID] = useState(false);
 
     const createOrder = (data, actions) => {
@@ -43,13 +42,16 @@ export default function HomePage() {
     const onApprove = async (data, actions) => {
         return await actions.order.capture().then(async function (details) {
             console.log(details);
-            const {payer} = details;
             const {data, error} = await supabase
                 .from('orders')
                 .insert([
                     {placed_at: new Date(), order_id: orderID, user_id: user.id, product_id: product.product.id},
                 ])
-            navigate('/products/buy/checkout');
+            if (error) {
+                setErrorMessage(error.message);
+            } else {
+                navigate('/products/buy/checkout');
+            }
         });
     };
 

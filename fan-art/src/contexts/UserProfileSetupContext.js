@@ -16,12 +16,13 @@ export function UserProfileSetupProvider({ children }) {
 
     useEffect(() => {
         const fetchUserProfile = async () => {
-            let { data, error } = await supabase.from('userInfo').select('*').eq('id', user.id);
-            console.log(data);
-            if(data.length > 0) {
-                setUserProfile(data);
-            }else {
-                setUserProfile(null);
+            if (user !== null) {
+                let {data: userProfile, error} = await supabase.from('userInfo').select('*').eq('id', user.id);
+                if (userProfile.length > 0) {
+                    setUserProfile(userProfile[0]);
+                } else {
+                    setUserProfile(null);
+                }
             }
         };
         fetchUserProfile();

@@ -34,6 +34,8 @@ function Copyright() {
 const steps = ['Shipping address', 'Payment details'];
 
 export default function Checkout(props) {
+    
+    
 
     const {
         firstName, lastName, address1, address2,

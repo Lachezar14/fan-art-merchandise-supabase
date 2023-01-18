@@ -16,6 +16,7 @@ import Stack from "@mui/material/Stack";
 import {Link} from "react-router-dom";
 import UserProfileSetup from "../components/UserProfileSetup";
 import {useProfileSetup} from "../contexts/UserProfileSetupContext";
+import MenuItem from "@mui/material/MenuItem";
 
 export default function Profile() {
 
@@ -27,6 +28,24 @@ export default function Profile() {
     const [errorMessage, setErrorMessage] = useState(false);
     const [alert, setAlert] = useState(false);
     const [alertContent, setAlertContent] = useState('');
+    const [tag, setTag] = useState("");
+    const [creatorTags, setCreatorTags] = useState([]);
+    
+    useEffect(() => {
+        const fetchTags = async () => {
+            let { data, error } = await supabase
+                .from('creatorTags')
+                .select('*')
+
+            setCreatorTags(data);
+        };
+        fetchTags();
+    }, []);
+
+    const creatorTagChange = (event) => {
+        setTag(event.target.value);
+    };
+        
     
     const uploadImage = async (event) => {
         event.preventDefault();
@@ -53,7 +72,7 @@ export default function Profile() {
                     {
                         product_name: dataForm.get("product_name"),
                         product_price: dataForm.get("product_price"),
-                        product_type: dataForm.get("product_type"),
+                        product_tag: tag,
                         user_id: user.id,
                         image_url: url.data.publicUrl
                     },
@@ -116,13 +135,22 @@ export default function Profile() {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
+                                        margin="normal"
+                                        id="outlined-select-currency"
                                         required
                                         fullWidth
-                                        id="product_type"
-                                        label="Product Type"
-                                        name="product_type"
-                                        autoComplete="product-type"
-                                    />
+                                        select
+                                        label="Creator Tag"
+                                        value={tag}
+                                        onChange={creatorTagChange}
+                                        helperText={"Please select the creator your product is about"}
+                                    >
+                                        {creatorTags.map((tag) => (
+                                            <MenuItem key={tag.id} value={tag}>
+                                                {tag.creator_name}
+                                            </MenuItem>
+                                        ))}
+                                    </TextField>
                                 </Grid>
                                 <Grid item xs={12}>
                                     <Box sx={{
@@ -161,6 +189,14 @@ export default function Profile() {
                                 sx={{mt: 3, mb: 2}}
                             >
                                 Upload
+                            </Button>
+                            <Button
+                                component={Link}
+                                to={"/profile/verification"}
+                                fullWidth
+                                variant="contained"
+                            >
+                                Become a verified user/Organization
                             </Button>
                         </Box>
                     </Box>

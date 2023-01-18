@@ -43,7 +43,8 @@ export default function ProfileSetup() {
                         last_name: formData.get("lastName"),
                         phone_number: formData.get("phoneNumber"),
                         email: user.email,
-                        password: formData.get("password")
+                        password: formData.get("password"),
+                        role: "USER"
                     },
                 ])
             if (error) {
@@ -55,7 +56,7 @@ export default function ProfileSetup() {
                 setAlert(true);
                 setAlertContent("Profile set up successfully");
                 setTimeout(() => {
-                    navigate('/profile');
+                    window.location.href = "/profile";
                 }, 1000);
             }
         }
