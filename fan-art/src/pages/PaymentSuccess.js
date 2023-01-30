@@ -1,31 +1,61 @@
-﻿import {ThemeProvider} from "@mui/material/styles";
-import {theme} from "../theme";
-import CssBaseline from "@mui/material/CssBaseline";
-import * as React from "react";
-import Typography from "@mui/material/Typography";
-import Paper from "@mui/material/Paper";
-import Container from "@mui/material/Container";
+﻿import { createStyles, Title, Text, Button, Container, Group } from '@mantine/core';
+import {Link} from "react-router-dom";
 
+const useStyles = createStyles((theme) => ({
+    root: {
+        paddingTop: 80,
+        paddingBottom: 80,
+    },
 
-export default function PaymentSuccess() {
+    label: {
+        textAlign: 'center',
+        fontWeight: 900,
+        fontSize: 220,
+        lineHeight: 1,
+        marginBottom: theme.spacing.xl * 1.5,
+        color: theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[2],
+
+        [theme.fn.smallerThan('sm')]: {
+            fontSize: 120,
+        },
+    },
+
+    title: {
+        fontFamily: `Greycliff CF, ${theme.fontFamily}`,
+        textAlign: 'center',
+        fontWeight: 900,
+        fontSize: 38,
+
+        [theme.fn.smallerThan('sm')]: {
+            fontSize: 32,
+        },
+    },
+
+    description: {
+        maxWidth: 500,
+        margin: 'auto',
+        marginTop: theme.spacing.xl,
+        marginBottom: theme.spacing.xl * 1.5,
+    },
+}));
+
+export function PaymentSuccess() {
+    const { classes } = useStyles();
 
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline/>
-            <Container component="main" maxWidth="sm" sx={{mb: 4}}>
-                <Paper variant="outlined" sx={{my: {xs: 3, md: 6}, p: {xs: 2, md: 3}}}>
-                    <React.Fragment>
-                        <Typography variant="h5" gutterBottom>
-                            Thank you for your order.
-                        </Typography>
-                        <Typography variant="subtitle1">
-                            Your order number is #2001539. We have emailed your order
-                            confirmation, and will send you an update when your order has
-                            shipped.
-                        </Typography>
-                    </React.Fragment>
-                </Paper>
-            </Container>
-        </ThemeProvider>
-    )
+        <Container className={classes.root}>
+            <Title className={classes.title}>Your order has been placed!</Title>
+            <Text color="dimmed" size="lg" align="center" className={classes.description}>
+                We have sent you an email with the order details. You can also check your order in your account.
+            </Text>
+            <Group position="center">
+                <Button component={Link} 
+                        to={"/profile"} 
+                        variant="subtle" 
+                        size="md">
+                    Take me back to my account
+                </Button>
+            </Group>
+        </Container>
+    );
 }

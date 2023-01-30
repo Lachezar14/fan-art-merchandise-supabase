@@ -1,141 +1,116 @@
-﻿import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {FormHelperText} from "@mui/material";
+﻿import { useToggle, upperFirst } from '@mantine/hooks';
+import { useForm } from '@mantine/form';
+import {
+    TextInput,
+    PasswordInput,
+    Text,
+    Paper,
+    Group,
+    Button,
+    Divider,
+    Checkbox,
+    Anchor,
+    Stack, Container, Flex, SimpleGrid,
+} from '@mantine/core';
+import { GoogleButton } from '../components/Button/GoogleButton';
+import {supabase} from "../supabaseClient";
 import {useNavigate} from "react-router-dom";
-import {theme} from "../theme";
 
-function Copyright(props) {
-    return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {'Copyright © '}
-            <Link color="inherit" href="https://mui.com/">
-                Your Website
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
+export function Register() {
 
-export default function SignUp() {
-    
-    const [errorMessage, setErrorMessage] = React.useState(false);
     let navigate = useNavigate();
-    
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        
-    };
 
+    const form = useForm({
+        initialValues: {
+            firstName: '',
+            lastName: '',
+            phone: '',
+            email: '',
+            password: '',
+            terms: false,
+        },
+
+        validate: {
+            email: (val) => (/^\S+@\S+$/.test(val) ? null : 'Invalid email'),
+            password: (val) => (val.length <= 6 ? 'Password should include at least 6 characters' : null),
+            terms: (val) => (val ? null : 'You must agree to terms and conditions'),
+        },
+    });
+    
     return (
-        <ThemeProvider theme={theme}>
-            <Container component="main" maxWidth="xs">
-                <CssBaseline />
-                <Box
-                    sx={{
-                        marginTop: 8,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
-                >
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                        <LockOutlinedIcon />
-                    </Avatar>
-                    <Typography component="h1" variant="h5">
-                        Register
-                    </Typography>
-                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    autoComplete="given-name"
-                                    name="firstName"
-                                    required
-                                    fullWidth
-                                    id="firstName"
-                                    label="First Name"
-                                    autoFocus
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="lastName"
-                                    label="Last Name"
-                                    name="lastName"
-                                    autoComplete="family-name"
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    autoComplete="phone-number"
-                                    name="phoneNumber"
-                                    required
-                                    fullWidth
-                                    id="phoneNumber"
-                                    label="Phone Number"
-                                    autoFocus
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="email"
-                                    label="Email Address"
-                                    name="email"
-                                    autoComplete="email"
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    name="password"
-                                    label="Password"
-                                    type="password"
-                                    id="password"
-                                    autoComplete="new-password"
-                                />
-                            </Grid>
-                        </Grid>
-                        <Box sx={{display:'flex',justifyContent:'center',mt: 3}}>
-                            <FormHelperText error>  
-                                {errorMessage}
-                            </FormHelperText>
-                        </Box>
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
-                        >
-                            Sign Up
-                        </Button>
-                        <Grid container justifyContent="flex-end">
-                            <Grid item>
-                                <Link href='/login' variant="body2">
-                                    Already have an account? Sign in
-                                </Link>
-                            </Grid>
-                        </Grid>
-                    </Box>
-                </Box>
-                <Copyright sx={{ mt: 5 }} />
-            </Container>
-        </ThemeProvider>
+        <Container size="xs" mt={100}>
+            <Paper radius="md" p="md" withBorder>
+                <Text size="lg" weight={500} mb={10}>
+                    Welcome to Mantine, register with
+                </Text>
+                <form onSubmit={form.onSubmit(() => {})}>
+                    <Stack>
+                        <SimpleGrid cols={2} breakpoints={[{maxWidth: 'sm', cols: 1}]}>
+                            <TextInput
+                                id="firstName"
+                                name="firstName"
+                                label="First Name"
+                                placeholder="Ben"
+                                required
+                                value={form.values.firstName}
+                                onChange={(event) => form.setFieldValue('firstName', event.currentTarget.value)}
+                            />
+                            <TextInput
+                                id="lastName"
+                                name="lastName"
+                                label="Family Name"
+                                placeholder="Dover"
+                                required
+                                value={form.values.lastName}
+                                onChange={(event) => form.setFieldValue('lastName', event.currentTarget.value)}
+                            />
+                        </SimpleGrid>
+
+                        <TextInput
+                            required
+                            label="Phone Number"
+                            placeholder="Phone Number"
+                            value={form.values.phone}
+                            onChange={(event) => form.setFieldValue('phone', event.currentTarget.value)}
+                            error={form.errors.phone && 'Invalid phone number'}
+                        />
+
+                        <TextInput
+                            required
+                            label="Email"
+                            placeholder="hello@mantine.dev"
+                            value={form.values.email}
+                            onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
+                            error={form.errors.email && 'Invalid email'}
+                        />
+
+                        <PasswordInput
+                            required
+                            label="Password"
+                            placeholder="Your password"
+                            value={form.values.password}
+                            onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
+                            error={form.errors.password && 'Password should include at least 6 characters'}
+                        />
+                        
+                        <Checkbox
+                            label="I accept terms and conditions"
+                            checked={form.values.terms}
+                            onChange={(event) => form.setFieldValue('terms', event.currentTarget.checked)}
+                        />
+                    </Stack>
+
+                    <Flex direction="column" mt={20}>
+                        <Button type="submit" radius="xl">Register</Button>
+                        <Text align="center" mt={10}>
+                           Already have an account?{' '}
+                            <Anchor weight={700} onClick={() => navigate("/login")}>
+                                Login
+                            </Anchor>
+                        </Text>
+                    </Flex>
+                </form>
+            </Paper>
+        </Container>
     );
 }

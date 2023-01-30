@@ -54,7 +54,7 @@ export default function ProfileSetup() {
                 }, 3000);
             } else {
                 setAlert(true);
-                setAlertContent("Profile set up successfully");
+                setAlertContent("ProductUpload set up successfully");
                 setTimeout(() => {
                     window.location.href = "/profile";
                 }, 1000);

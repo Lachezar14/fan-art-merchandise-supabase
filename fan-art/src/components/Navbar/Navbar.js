@@ -13,12 +13,12 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import BubbleChartIcon from '@mui/icons-material/BubbleChart';
 import {Link, useNavigate} from "react-router-dom";
-import {theme} from "../theme";
+import {theme} from "../../theme";
 import {ThemeProvider} from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import {useEffect} from "react";
-import {useAuth} from "../contexts/AuthContext";
-import {supabase} from "../supabaseClient";
+import {useAuth} from "../../contexts/AuthContext";
+import {supabase} from "../../supabaseClient";
 
 const pages = [
     {name: 'Products', url: '/products'},

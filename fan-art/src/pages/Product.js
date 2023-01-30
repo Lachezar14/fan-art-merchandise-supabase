@@ -1,36 +1,63 @@
 ﻿import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Button from '@mui/material/Button';
-import CameraIcon from '@mui/icons-material/PhotoCamera';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import CssBaseline from '@mui/material/CssBaseline';
+import {useEffect, useState} from 'react';
 import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useState, useEffect} from "react";
-import {theme} from "../theme";
-import {Link} from "react-router-dom";
 import {supabase} from "../supabaseClient";
-import {FormHelperText} from "@mui/material";
 import {useProfileSetup} from "../contexts/UserProfileSetupContext";
 import UserProfileSetup from "../components/UserProfileSetup";
-import VerifiedIcon from '@mui/icons-material/Verified';
-import {blue} from "@mui/material/colors";
-import Tooltip from "@mui/material/Tooltip";
+import {AppShell, Button, Collapse, createStyles, Text, Tooltip, UnstyledButton} from '@mantine/core';
+import {FilterComponent} from "../components/Filter/FilterComponent";
+import {ProductDisplay} from "../components/Products/ProductDisplay";
+import {HeaderNavbar} from "../components/Navbar/HeaderNavbar";
+import {IconAdjustmentsAlt} from "@tabler/icons";
+import {Transition} from "@mantine/core";
+
+const useStyles = createStyles((theme) => ({
+    card: {
+        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+    },
+
+    imageSection: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderBottom: `1px solid ${
+            theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]
+        }`,
+    },
+
+    label: {
+        marginBottom: theme.spacing.xs,
+        lineHeight: 1,
+        fontWeight: 700,
+        fontSize: theme.fontSizes.xs,
+        letterSpacing: -0.25,
+        textTransform: 'uppercase',
+    },
+
+    section: {
+        padding: theme.spacing.md,
+        borderTop: `1px solid ${
+            theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]
+        }`,
+    },
+
+    icon: {
+        marginRight: 5,
+        color: theme.colorScheme === 'dark' ? theme.colors.dark[2] : theme.colors.gray[5],
+    },
+}));
 
 export default function Album() {
-    
-    const { userProfile } = useProfileSetup();
+
+    const {classes} = useStyles();
+    const {userProfile} = useProfileSetup();
     const [products, setProducts] = useState([]);
     const [errorMessage, setErrorMessage] = useState(false);
-    
+    const [opened, setOpened] = useState(true);
+
     useEffect(() => {
         const getProducts = async () => {
             let {data: products, error} = await supabase
@@ -41,16 +68,41 @@ export default function Album() {
         }
         getProducts();
     }, []);
-    
+
+    const sendDataToParent = (filteredProducts) => { // the callback. Use a better name
+        setProducts(filteredProducts);
+
+    };
+
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <UserProfileSetup />
-                {/* Hero unit */}
+        <>
+            <UserProfileSetup/>
+            <AppShell
+                padding="xs"
+                navbar={
+                    <Collapse in={opened}>
+                        {!opened ? null :
+                            <FilterComponent sendDataToParent={sendDataToParent}/>}
+                    </Collapse>}
+                aside={
+                    <Box sx={{mr: 3}}>
+                        <Tooltip
+                            label={!opened ? "Show filters" : "Hide filters"}
+                            position="right-start"
+                            offset={15}
+                        >
+                            <UnstyledButton onClick={() => setOpened(!opened)} fullWidth>
+                                <IconAdjustmentsAlt size={24} className={classes.icon}/>
+                            </UnstyledButton>
+                        </Tooltip>
+                    </Box>
+                }
+                styles={(theme) => ({
+                    main: {backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.white},
+                })}>
                 <Box
                     sx={{
                         bgcolor: 'background.paper',
-                        pt: 8,
                         pb: 6,
                     }}
                 >
@@ -71,68 +123,13 @@ export default function Album() {
                         </Typography>
                     </Container>
                 </Box>
-                <Container sx={{ py: 8 }} maxWidth="lg">
-                    {/* End hero unit */}
+                <Container sx={{py: 8}} maxWidth="lg">
                     <Grid container spacing={4}>
-                        {products.map((product) => (
-                            <Grid item key={product.id} xs={12} sm={6} md={4}>
-                                <Card
-                                    sx={{ height: '100%', display: 'flex', flexDirection: 'column'}}
-                                >
-                                    <CardMedia
-                                        component="img"
-                                        image={product.image_url}
-                                        alt="random"
-                                    />
-                                    <CardContent sx={{ flexGrow: 1 }}>
-                                        <Box sx={{display: 'flex', flexDirection: 'row'}}>
-                                            <Typography gutterBottom variant="h5" component="h2" sx={{mr: 1}}>
-                                                {product.product_name}
-                                            </Typography>
-                                            {
-                                                product.verified ?
-                                                    <Tooltip title="Product is verified by content creator" arrow>
-                                                        <VerifiedIcon fontSize='small' sx={{color: blue[700]}}/>
-                                                    </Tooltip>
-                                                    :
-                                                    <></>
-                                            }
-                                        </Box>
-                                        <Typography>
-                                            Price: ${product.product_price}
-                                        </Typography>
-                                    </CardContent>
-                                    <Box sx={{display:'flex',justifyContent:'flex-end'}}>
-                                        <CardActions>
-                                            <Button component={Link}
-                                                    key={product.id}
-                                                    to={userProfile === null ? `/profile/setup` : `/products/buy`}
-                                                    size="small"
-                                                    state={{product: product}}
-                                             > View
-                                            </Button>
-                                        </CardActions>
-                                    </Box>
-                                </Card>
-                            </Grid>
-                        ))}
+                        <ProductDisplay products={products}/>
                     </Grid>
                 </Container>
-            {/* Footer */}
-            <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
-                <Typography variant="h6" align="center" gutterBottom>
-                    Footer
-                </Typography>
-                <Typography
-                    variant="subtitle1"
-                    align="center"
-                    color="text.secondary"
-                    component="p"
-                >
-                    Something here to give the footer a purpose!
-                </Typography>
-            </Box>
-            {/* End footer */}
-        </ThemeProvider>
+            </AppShell>
+
+        </>
     );
 }

@@ -5,14 +5,18 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {UserProfileSetupProvider} from "./contexts/UserProfileSetupContext";
 import {AuthProvider} from "./contexts/AuthContext";
+import {PayPalScriptProvider} from "@paypal/react-paypal-js";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
         <AuthProvider>
-        <UserProfileSetupProvider>
-            <App/>
-        </UserProfileSetupProvider>
+            <UserProfileSetupProvider>
+                <PayPalScriptProvider
+                    options={{"client-id": "AXNjBapNMMTgNB2vQNJIHuqZL3emyfPnDvDhgZ1hsDEhqNfe5398Dw3rZLNxZZ47V-UPie9f_6ZO3vBQ"}}>
+                <App/>
+                </PayPalScriptProvider>
+            </UserProfileSetupProvider>
         </AuthProvider>
     </React.StrictMode>
 );

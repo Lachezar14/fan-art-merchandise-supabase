@@ -45,12 +45,12 @@ export default function HomePage() {
             const {data, error} = await supabase
                 .from('orders')
                 .insert([
-                    {placed_at: new Date(), order_id: orderID, user_id: user.id, product_id: product.product.id},
+                    {placed_at: new Date(),user_id: user.id, product_id: product.product.id},
                 ])
             if (error) {
                 setErrorMessage(error.message);
             } else {
-                navigate('/products/buy/checkout');
+                navigate('/products/buy/success');
             }
         });
     };

@@ -1,0 +1,98 @@
+﻿import {Box, createStyles, SimpleGrid, Stack, Text, ThemeIcon} from '@mantine/core';
+import {
+    IconAt,
+    IconDiscountCheck,
+    IconMapPin,
+    IconPackage,
+    IconPhone,
+    IconPhoto,
+    IconSun,
+    IconTag
+} from '@tabler/icons';
+
+
+const useStyles = createStyles((theme, { variant }) => ({
+    wrapper: {
+        display: 'flex',
+        alignItems: 'center',
+        color: theme.white,
+    },
+
+    icon: {
+        marginRight: theme.spacing.md,
+        backgroundImage:
+            variant === 'gradient'
+                ? `linear-gradient(135deg, ${theme.colors[theme.primaryColor][4]} 0%, ${
+                    theme.colors[theme.primaryColor][6]
+                } 100%)`
+                : 'none',
+        backgroundColor: 'transparent',
+    },
+
+    title: {
+        color: variant === 'gradient' ? theme.colors.gray[6] : theme.colors[theme.primaryColor][0],
+    },
+
+    description: {
+        color: variant === 'gradient' ? theme.black : theme.white,
+    },
+}));
+
+function ContactIcon({
+                         icon: Icon,
+                         title,
+                         description,
+                         variant = 'gradient',
+                         className,
+                         ...others
+                     }) {
+    const { classes, cx } = useStyles({ variant });
+    return (
+        <div className={cx(classes.wrapper, className)} {...others}>
+            {variant === 'gradient' ? (
+                <ThemeIcon size={40} radius="md" className={classes.icon}>
+                    <Icon size={24} />
+                </ThemeIcon>
+            ) : (
+                <Box mr="md">
+                    <Icon size={24} />
+                </Box>
+            )}
+
+            <div>
+                <Text size="xs" className={classes.title}>
+                    {title}
+                </Text>
+                <Text className={classes.description}>{description}</Text>
+            </div>
+        </div>
+    );
+}
+
+const MOCKDATA = [
+    { title: 'Email', description: 'hello@mantine.dev', icon: IconAt },
+    { title: 'Phone', description: '+49 (800) 335 35 35', icon: IconPhone },
+    { title: 'Address', description: '844 Morris Park avenue', icon: IconMapPin },
+    { title: 'Working hours', description: '8 a.m. – 11 p.m.', icon: IconSun },
+];
+
+export function ContactIconsList({mockdata, variant}) {
+    const items = mockdata.mockdata.map((item, index) => <ContactIcon key={index} variant={variant} {...item} />);
+    return <Stack>{items}</Stack>;
+}
+
+export function DisplaySocials({mockdata}) {
+    return (
+        <SimpleGrid cols={1} breakpoints={[{ maxWidth: 755, cols: 1 }]}>
+            <Box
+                sx={(theme) => ({
+                    padding: theme.spacing.xl,
+                    borderRadius: theme.radius.md,
+                    backgroundImage: theme.colors[theme.primaryColor][6],
+                })}
+            >
+                <ContactIconsList mockdata={mockdata} variant="white" />
+            </Box>
+        </SimpleGrid>
+    );
+}
