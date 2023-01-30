@@ -1,4 +1,4 @@
-﻿import Profile from '../pages/Profile';
+﻿import ProductUpload from '../pages/ProductUpload';
 import AdminProfile from "../pages/AdminProfile";
 import {useProfileSetup} from "../contexts/UserProfileSetupContext";
 
@@ -8,7 +8,7 @@ const ProfilePage = () => {
 
     return (
         <div>
-            {userProfile?.role === "ADMIN" ? <AdminProfile/> : <Profile/>}
+            {userProfile?.role === "ADMIN" ? <AdminProfile/> : <ProductUpload/>}
         </div>
     )
 };
